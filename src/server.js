@@ -1,5 +1,7 @@
 const http = require('http');
+const query = require('querystring');
 const htmlHandler = require('./htmlResponses');
+
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -12,7 +14,32 @@ const urlStruct = {
 };
 
 const handlePost = (request, response, parsedURL) => {
+  if (urlStruct[parsedURL.pathname]) {
+    // Store body parts in here
+    const body = [];
 
+    // Set up error handler
+    request.on('error', (err) => {
+      console.dir(err);
+      response.statusCode = 400;
+      response.end();
+    });
+
+    // Collect new body parts when they arrive
+    request.on('data', (chunk) => {
+      body.push(chunk);
+    });
+
+    // When request finished combine body parts and turn them into a single string
+    //  then turn it into an object
+    request.on('end', () => {
+      const bodyString = Buffer.concat(body).toString();
+      request.body = query.parse(bodyString);
+      urlStruct[parsedURL.pathname](request, response);
+    });
+
+    
+  }
 };
 
 const handleGetHead = (request, response, parsedURL) => {
