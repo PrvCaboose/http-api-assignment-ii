@@ -5,7 +5,69 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script>
+    const displayMessage = async (response) => {
+      const container = document.getElementById('content');
+      const data = await response.json();
+      container.innerHTML = `Message: ${data.message}`;
+      
+    }
 
+    const sendPost = async (nameForm) => {
+      const url = nameForm.getAttribute('action');
+      const method = nameForm.getAttribute('method');
+
+      const name = nameForm.querySelector('#nameField');
+      const age = nameForm.querySelector('#ageField');
+
+      const formData = `name=${name.value}&age=&${age.value}`;
+
+      const response = await fetch(url, {
+        'method': method,
+        'headers': {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+        },
+        'body': formData
+      });
+
+      displayMessage(response);
+    }
+
+    const sendGetHead = async (userForm) => {
+      const url = userForm.querySelector('#urlField').value;
+      const method = userForm.querySelector('#methodSelect').value;
+
+      const response = await fetch(url, {
+        'method': method,
+        'headers': {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      });
+
+      displayMessage(response);
+    }
+
+    const init = () => {
+      const nameForm = document.getElementById('nameForm');
+      const userForm = document.getElementById('userForm');
+      
+      const addUser = (e) => {
+        e.preventDefault();
+        sendPost(e);
+        return false;
+      }
+
+      const getUser = (e) => {
+        e.preventDefault();
+        sendGetHead(userForm);
+        return false;
+      }
+
+      nameForm.addEventListener('submit', addUser);
+      userForm.addEventListener('submit', getUser);
+    }
+    window.onload = init;
   </script>
 </head>
 <body>

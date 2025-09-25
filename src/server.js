@@ -37,14 +37,13 @@ const handlePost = (request, response, parsedURL) => {
       request.body = query.parse(bodyString);
       urlStruct[parsedURL.pathname](request, response);
     });
-
-    
   }
 };
 
 const handleGetHead = (request, response, parsedURL) => {
+  console.log(parsedURL.pathname);
   if (urlStruct[parsedURL.pathname]) {
-    urlStruct[parsedURL.pathname](request, response);
+    return urlStruct[parsedURL.pathname](request, response);
   }
   // Fallback if url fails
   return urlStruct['/notReal'](request, response);
