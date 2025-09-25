@@ -1,6 +1,7 @@
 const http = require('http');
 const query = require('querystring');
 const htmlHandler = require('./htmlResponses');
+const jsonHandler = require('./jsonResponses');
 
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
@@ -8,9 +9,9 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 const urlStruct = {
   '/': htmlHandler.getIndex,
   '/style.css': htmlHandler.getStyles,
-  '/getUsers': '',
-  '/notReal': '',
-  '/addUser': '',
+  '/getUsers': jsonHandler.getUsers,
+  '/notReal': jsonHandler.notReal,
+  '/addUser': jsonHandler.addUser,
 };
 
 const handlePost = (request, response, parsedURL) => {
