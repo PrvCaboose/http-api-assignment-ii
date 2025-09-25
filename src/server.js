@@ -11,26 +11,16 @@ const urlStruct = {
   '/addUser': '',
 };
 
-// const handleRequest = (request, response, parsedURL) => {
-//   // Check if URL exists, then call the proper handler
-//   if (urlStruct[parsedURL.pathname]) {
-//     return urlStruct[parsedURL.pathname](request, response);
-//   }
-
-//   // Fallback if url fails
-//   return urlStruct['/notReal'](request, response);
-// };
-
 const handlePost = (request, response, parsedURL) => {
 
 };
 
-const handleGet = (request, response, parsedURL) => {
-
-};
-
-const handleHead = (request, response, parsedURL) => {
-
+const handleGetHead = (request, response, parsedURL) => {
+  if (urlStruct[parsedURL.pathname]) {
+    urlStruct[parsedURL.pathname](request, response);
+  }
+  // Fallback if url fails
+  return urlStruct['/notReal'](request, response);
 };
 
 const onRequest = (request, response) => {
@@ -38,18 +28,10 @@ const onRequest = (request, response) => {
   const protocol = request.connection.encryted ? 'https' : 'http';
   const parsedURL = new URL(request.url, `${protocol}://${request.headers.host}`);
 
-  switch (request.method) {
-    case 'POST':
-      handlePost(request, response, parsedURL);
-      break;
-    case 'GET':
-      handleGet(request, response, parsedURL);
-      break;
-    case 'HEAD':
-      handleHead(request, response, parsedURL);
-      break;
-    default:
-      break;
+  if (request.method === 'POST') {
+    handlePost(request, response, parsedURL);
+  } else {
+    handleGetHead(request, response, parsedURL);
   }
 };
 
