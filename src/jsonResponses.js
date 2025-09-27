@@ -45,6 +45,7 @@ const addUser = (request, response) => {
         jsonMessage.message = "Created Successfully";
         return sendResponse(request, response, responseCode, jsonMessage);
     }
+    users[name].age = age;
 
     // 204 response doesn't send body
     sendResponse(request, response, responseCode, {})
@@ -52,7 +53,10 @@ const addUser = (request, response) => {
 }
 
 const notReal = (request, response) => {
-
+    const jsonMessage = {
+        message: "The page you are looking for doesn't exist"
+    };
+    sendResponse(request, response, 404, jsonMessage);
 }
 
 module.exports = {

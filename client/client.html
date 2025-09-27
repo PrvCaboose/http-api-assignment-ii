@@ -7,19 +7,51 @@
   <script>
     const displayMessage = async (response) => {
       const container = document.getElementById('content');
-      const data = await response.json();
-      container.innerHTML = `Message: ${data.message}`;
+      let data;
+      switch (response.status) {
+        case 200:
+          container.innerHTML = `Success`;
+          if (response.body) {
+            data = await response.json();
+            console.log(data);
+            container.innerHTML += `<br></br>${JSON.stringify(data.users)}`;
+          }
+          break;
+        case 201:
+          data = await response.json();
+          console.log(data); 
+          container.innerHTML = `Created<br></br>Message: ${data.message}`;
+          break;
+        case 204:
+          container.innerHTML = `Updated (No Content)`;
+          break;
+        case 400:
+          data = await response.json();
+          console.log(data); 
+          container.innerHTML = `Bad Request<br></br>Message: ${data.message}`;
+          break;
+        case 404:
+          container.innerHTML = `Not Found`;
+          if (response.body) {
+            data = await response.json();
+            console.log(data);
+            container.innerHTML += `<br></br>Message: ${data.message}`;
+          }
+          break;
+      }
+
       
     }
 
     const sendPost = async (nameForm) => {
+      console.log(nameForm)
       const url = nameForm.getAttribute('action');
       const method = nameForm.getAttribute('method');
 
       const name = nameForm.querySelector('#nameField');
       const age = nameForm.querySelector('#ageField');
 
-      const formData = `name=${name.value}&age=&${age.value}`;
+      const formData = `name=${name.value}&age=${age.value}`;
 
       const response = await fetch(url, {
         'method': method,
@@ -54,7 +86,7 @@
       
       const addUser = (e) => {
         e.preventDefault();
-        sendPost(e);
+        sendPost(nameForm);
         return false;
       }
 
